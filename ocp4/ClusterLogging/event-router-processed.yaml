@@ -1,0 +1,132 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "ServiceAccount",
+            "metadata": {
+                "name": "eventrouter",
+                "namespace": "openshift-logging"
+            }
+        },
+        {
+            "apiVersion": "authorization.openshift.io/v1",
+            "kind": "ClusterRole",
+            "metadata": {
+                "name": "event-reader"
+            },
+            "rules": [
+                {
+                    "apiGroups": [
+                        ""
+                    ],
+                    "resources": [
+                        "events"
+                    ],
+                    "verbs": [
+                        "get",
+                        "watch",
+                        "list"
+                    ]
+                }
+            ]
+        },
+        {
+            "apiVersion": "authorization.openshift.io/v1",
+            "kind": "ClusterRoleBinding",
+            "metadata": {
+                "name": "event-reader-binding"
+            },
+            "roleRef": {
+                "kind": "ClusterRole",
+                "name": "event-reader"
+            },
+            "subjects": [
+                {
+                    "kind": "ServiceAccount",
+                    "name": "eventrouter",
+                    "namespace": "openshift-logging"
+                }
+            ]
+        },
+        {
+            "apiVersion": "v1",
+            "data": {
+                "config.json": "{\n  \"sink\": \"stdout\"\n}"
+            },
+            "kind": "ConfigMap",
+            "metadata": {
+                "name": "eventrouter",
+                "namespace": "openshift-logging"
+            }
+        },
+        {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+                "labels": {
+                    "component": "eventrouter",
+                    "logging-infra": "eventrouter",
+                    "provider": "openshift"
+                },
+                "name": "eventrouter",
+                "namespace": "openshift-logging"
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "matchLabels": {
+                        "component": "eventrouter",
+                        "logging-infra": "eventrouter",
+                        "provider": "openshift"
+                    }
+                },
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "component": "eventrouter",
+                            "logging-infra": "eventrouter",
+                            "provider": "openshift"
+                        },
+                        "name": "eventrouter"
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "image": "registry.redhat.io/openshift4/ose-logging-eventrouter:latest",
+                                "imagePullPolicy": "IfNotPresent",
+                                "name": "kube-eventrouter",
+                                "resources": {
+                                    "limits": {
+                                        "memory": "128Mi"
+                                    },
+                                    "requests": {
+                                        "cpu": "100m",
+                                        "memory": "128Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "mountPath": "/etc/eventrouter",
+                                        "name": "config-volume"
+                                    }
+                                ]
+                            }
+                        ],
+                        "serviceAccount": "eventrouter",
+                        "volumes": [
+                            {
+                                "configMap": {
+                                    "name": "eventrouter"
+                                },
+                                "name": "config-volume"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

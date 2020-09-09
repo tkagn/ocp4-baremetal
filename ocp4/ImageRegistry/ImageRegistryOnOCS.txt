@@ -1,0 +1,43 @@
+# Move Registry to OCS4.x
+
+## Review current Registry operator
+oc describe configs.imageregistry.operator.openshift.io
+
+#Review current 
+oc describe project openshift-image-registry
+
+# Review image registry pods
+oc get pods -n openshift-image-registry
+
+# Review current Image Registry config
+oc edit configs.imageregistry.operator.openshift.io/cluster
+
+# Generate Image registry pvc
+oc project openshift-image-registry
+vi imageregistrypvc.yaml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ocs4imageregistry
+  namespace: openshift-image-registry
+spec:
+  storageClassName: ocs-storagecluster-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+
+oc create -f imageregistrypvc.yaml
+
+# Edit Image Registry Operator
+oc edit configs.imageregistry.operator.openshift.io
+Set storge spec
+
+storage:
+  pvc:
+    claim: ocs4imageregistry
+
+Set storage options for image registry deployment in ui
+

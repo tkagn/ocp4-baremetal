@@ -1,0 +1,262 @@
+apiVersion: v1
+items:
+- apiVersion: ceph.rook.io/v1
+  kind: CephCluster
+  metadata:
+    creationTimestamp: "2020-08-21T15:41:11Z"
+    deletionGracePeriodSeconds: 0
+    deletionTimestamp: "2020-08-27T17:38:53Z"
+    finalizers:
+    - cephcluster.ceph.rook.io
+    generation: 8703
+    labels:
+      app: ocs-storagecluster
+    name: ocs-storagecluster-cephcluster
+    namespace: openshift-storage
+    ownerReferences:
+    - apiVersion: ocs.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StorageCluster
+      name: ocs-storagecluster
+      uid: 83061289-4ed5-44a9-9bea-3fb7d6115d64
+    resourceVersion: "6344695"
+    selfLink: /apis/ceph.rook.io/v1/namespaces/openshift-storage/cephclusters/ocs-storagecluster-cephcluster
+    uid: 94887195-f820-4ece-b6e2-c2648b1b9590
+  spec:
+    cephVersion:
+      image: registry.redhat.io/rhceph/rhceph-4-rhel8@sha256:f9ae769d57e61d918ab75cd280cc7effb24f8a217e48067dec1b5936b80848bb
+    continueUpgradeAfterChecksEvenIfNotHealthy: true
+    crashCollector:
+      disable: false
+    dashboard: {}
+    dataDirHostPath: /var/lib/rook
+    disruptionManagement:
+      machineDisruptionBudgetNamespace: openshift-machine-api
+      managePodBudgets: true
+    external:
+      enable: false
+    mgr:
+      modules:
+      - enabled: true
+        name: pg_autoscaler
+      - enabled: true
+        name: balancer
+    mon:
+      count: 3
+    monitoring:
+      enabled: true
+      rulesNamespace: openshift-storage
+    network:
+      hostNetwork: false
+      provider: ""
+      selectors: null
+    placement:
+      all:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: cluster.ocs.openshift.io/openshift-storage
+                operator: Exists
+        tolerations:
+        - effect: NoSchedule
+          key: node.ocs.openshift.io/storage
+          operator: Equal
+          value: "true"
+      mon:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - rook-ceph-mon
+              topologyKey: topology.rook.io/rack
+            weight: 100
+    rbdMirroring:
+      workers: 0
+    removeOSDsIfOutAndSafeToRemove: false
+    resources:
+      mgr:
+        limits:
+          cpu: "1"
+          memory: 3Gi
+        requests:
+          cpu: "1"
+          memory: 3Gi
+      mon:
+        limits:
+          cpu: "1"
+          memory: 2Gi
+        requests:
+          cpu: "1"
+          memory: 2Gi
+    storage:
+      config: null
+      storageClassDeviceSets:
+      - count: 1
+        name: ocs-deviceset-0
+        placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: Exists
+                - key: topology.rook.io/rack
+                  operator: In
+                  values:
+                  - rack0
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - rook-ceph-osd
+                topologyKey: topology.rook.io/rack
+              weight: 100
+          tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            operator: Equal
+            value: "true"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        volumeClaimTemplates:
+        - metadata:
+            creationTimestamp: null
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: "1"
+            storageClassName: localblock
+            volumeMode: Block
+          status: {}
+      - count: 1
+        name: ocs-deviceset-1
+        placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: Exists
+                - key: topology.rook.io/rack
+                  operator: In
+                  values:
+                  - rack1
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - rook-ceph-osd
+                topologyKey: topology.rook.io/rack
+              weight: 100
+          tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            operator: Equal
+            value: "true"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        volumeClaimTemplates:
+        - metadata:
+            creationTimestamp: null
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: "1"
+            storageClassName: localblock
+            volumeMode: Block
+          status: {}
+      - count: 1
+        name: ocs-deviceset-2
+        placement:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: cluster.ocs.openshift.io/openshift-storage
+                  operator: Exists
+                - key: topology.rook.io/rack
+                  operator: In
+                  values:
+                  - rack2
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - rook-ceph-osd
+                topologyKey: topology.rook.io/rack
+              weight: 100
+          tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            operator: Equal
+            value: "true"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        volumeClaimTemplates:
+        - metadata:
+            creationTimestamp: null
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: "1"
+            storageClassName: localblock
+            volumeMode: Block
+          status: {}
+  status:
+    ceph:
+      details:
+        MON_CLOCK_SKEW:
+          message: clock skew detected on mon.b, mon.c
+          severity: HEALTH_WARN
+        TOO_FEW_OSDS:
+          message: OSD count 1 < osd_pool_default_size 3
+          severity: HEALTH_WARN
+      health: HEALTH_WARN
+      lastChecked: "2020-08-27T23:26:02Z"
+    state: Creating
+    version:
+      image: registry.redhat.io/rhceph/rhceph-4-rhel8@sha256:f9ae769d57e61d918ab75cd280cc7effb24f8a217e48067dec1b5936b80848bb
+      version: 14.2.8-81
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
