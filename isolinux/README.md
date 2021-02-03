@@ -26,7 +26,7 @@ contents:
 #   kernel /images/vmlinuz
 #   append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes  ip=<static IP>::<GW>:<Mask>:<desired FQDN>::none nameserver=<DNS server> coreos.inst.install_dev=sda coreos.inst.image_url=http://<IP of FQDN of webserver hosting files>/rhcos-metal.x86_64.raw.gz coreos.inst.ignition_url=http://<IP of FQDN of webserver hosting files>/master.ign
 ```
-Review [isolunx.cfg](./isolunux.cfg) for an example.
+Review [isolunx.cfg](isolinux.cfg) for an example.
 ## Compile new iso
 ```bash
 cd <WorkingDir>/ISO
