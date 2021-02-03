@@ -27,7 +27,8 @@ contents:
 #   append initrd=/images/initramfs.img nomodeset rd.neednet=1 coreos.inst=yes  ip=<static IP>::<GW>:<Mask>:<desired FQDN>::none nameserver=<DNS server> coreos.inst.install_dev=sda coreos.inst.image_url=http://<IP of FQDN of webserver hosting files>/rhcos-metal.x86_64.raw.gz coreos.inst.ignition_url=http://<IP of FQDN of webserver hosting files>/master.ign
 ```
 ## Compile new iso
+```bash
 cd <WorkingDir>/ISO
 mkisofs -o <WorkingDir>/ocp4bootstrap.iso -rational-rock -J -joliet-long -eltorito-boot isolinux/isolinux.bin -eltorito-catalog isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table .
-
+```
 ## Burn iso to cd/usb or use for VM booting.
